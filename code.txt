@@ -1,10 +1,7 @@
-lda #01
-loop:
-adc $0201
-sta $0202
-lda $0201
-sta $0200
-lda $0202
-sta $0201
-lda $0200
-jmp loop
+ldx #ff
+code:
+dex
+bne code
+codigo:
+lda #aa
+jmp codigo
