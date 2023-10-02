@@ -1,0 +1,11 @@
+lda #01
+sta $0201 ; B = 1
+loop:
+lda $0200 ;
+adc $0201 ;
+sta $0202 ; C=A+B
+lda $0201 ;
+sta $0200 ; A = B
+lda $0202 ;
+sta $0201 ; B = C
+jmp loop

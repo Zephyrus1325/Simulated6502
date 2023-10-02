@@ -1,51 +1,42 @@
 ;Fibbonacci Code With 3 Bytes (1 to 14.930.352) - 36 numbers
 ldx #00
 lda #01
-var A $0200
-var B $0201
-var C $0202
-var D $0203
-var E $0204
-var F $0205
-var X $0206
-var Y $0207
-var Z $0208
 sta $0205 ; F = 1
 code:
 ;---------------------------- C = A+B
 ldx #01
-lda C    ;
-adc F    ;
-sta Z    ; Z=C+F
+lda $0202 ;
+adc $0205 ;
+sta $0208 ; Z=C+F
 parta:
-lda B    ;
-adc E    ;
-sta Y    ; Y=B+E
+lda $0201 ;
+adc $0204 ;
+sta $0207 ; Y=B+E
 partB:
-lda A    ;
-adc D    ;
-sta X    ; X=A+D
+lda $0200 ;
+adc $0203 ;
+sta $0206 ; X=A+D
 bcs stop  ; If carry, stop program
 ldx #02
 ;--------------------------- A = B
-lda D ;
-sta A ; A = D
+lda $0203 ;
+sta $0200 ; A = D
 
-lda E ;
-sta B ; B = E
+lda $0204 ;
+sta $0201 ; B = E
 
-lda F ;
-sta C ; C = F
+lda $0205 ;
+sta $0202 ; C = F
 ldx #03
 ;--------------------------- B = C
-lda X ;
-sta D ; D = X
+lda $0206 ;
+sta $0203 ; D = X
 
-lda Y ;
-sta E ; E = Y
+lda $0207 ;
+sta $0204 ; E = Y
 
-lda Z ;
-sta F ; F = Z
+lda $0208 ;
+sta $0205 ; F = Z
 ldx #04
 ;----------------------------
 jmp code

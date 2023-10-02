@@ -24,7 +24,7 @@ public class Compiler {
             while(code.hasNextLine()){
                 String line = code.nextLine();
                 if(!Objects.equals(line, "")){
-                    System.out.println(line);
+                    //System.out.println(line);
                     data.add(line);
                 }
             }

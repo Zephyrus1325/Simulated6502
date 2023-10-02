@@ -11,7 +11,11 @@ public class StringDecoder {
     private int beginningAddress = 1;
     private int actualAddress = beginningAddress;
     private ArrayList<String> label = new ArrayList<String>();
+    private ArrayList<String> variable = new ArrayList<String>();
     private int[] labelAddress = new int[256];
+    private String[] variableValue = new String[256];
+    private String[] variableValueLow = new String[256];
+    private String[] variableValueHigh = new String[256];
     BufferedWriter writer;
     ArrayList<String> data;
     boolean firstPass = true;
@@ -30,7 +34,7 @@ public class StringDecoder {
     public void startDecode() throws IOException {
         try {
             File output = new File("output.txt");
-            if (!output.createNewFile()) {
+            if (output.createNewFile()) {
                 System.out.println("Had no file, made a new one!");
             }
         } catch (IOException e) {
@@ -84,11 +88,35 @@ public class StringDecoder {
             if (line[1].startsWith("#") && number > 255) {
                 throw new IllegalArgumentException("Value is too big: " + line[1] + " At line " + lineNumber);
             }
+            if (line[1].startsWith("$") && number >= 1<<16) {
+                throw new IllegalArgumentException("Value is too big: " + line[1] + " At line " + lineNumber);
+            }
             highByte = String.format("%02x", high);
             lowByte = String.format("%02x", low);
+        } else { //if its not a not a number, it may be a variable
+
         }
         boolean pass = false;
             switch (start) {
+//----------------------------------------------------------------------------------------------------------------------
+//Variable declaration
+                case "VAR":
+                    if(firstPass){
+                        variable.add(line[1].toUpperCase()); //add a variable to variables list
+                        variableValue[variable.size()-1] = line[2];
+                        int number = Integer.parseInt(line[2].substring(1), 16);
+                        int low = number & (0xff);
+                        int high = number >> 8;
+                        if (line[2].startsWith("#") && number > 255) {
+                            throw new IllegalArgumentException("Value is too big: " + line[1] + " At line " + lineNumber);
+                        }
+                        if (line[2].startsWith("$") && number >= 1<<16) {
+                            throw new IllegalArgumentException("Value is too big: " + line[1] + " At line " + lineNumber);
+                        }
+                        variableValueHigh[variable.size()-1] = String.format("%02x", high);
+                        variableValueLow[variable.size()-1] = String.format("%02x", low);
+                    }
+                    break;
 //----------------------------------------------------------------------------------------------------------------------
                 case "ADC":
                     outputLine = absoluteCode(line, "69", "6D", highByte, lowByte);
@@ -111,10 +139,10 @@ public class StringDecoder {
                         if (name.equals(input)) {
                             int lowAddress = labelAddress[i] & (0xff);
                             int highAddress = labelAddress[i] >> 8;
-                            System.out.println(name);
-                            System.out.println(input);
-                            System.out.printf("%02x%n", labelAddress[i]);
-                            System.out.println("----------------");
+                            //System.out.println(name);
+                            //System.out.println(input);
+                            //System.out.printf("%02x%n", labelAddress[i]);
+                            //System.out.println("----------------");
                             outputLine = ("0x90" + ", " + "0x" + String.format("%02x", lowAddress) + ", " + "0x" + String.format("%02x", highAddress));
                             actualAddress += 3;
                             pass = true;
@@ -136,10 +164,10 @@ public class StringDecoder {
                         if (name.equals(input)) {
                             int lowAddress = labelAddress[i] & (0xff);
                             int highAddress = labelAddress[i] >> 8;
-                            System.out.println(name);
-                            System.out.println(input);
-                            System.out.printf("%02x%n", labelAddress[i]);
-                            System.out.println("----------------");
+                            //System.out.println(name);
+                            //System.out.println(input);
+                            //System.out.printf("%02x%n", labelAddress[i]);
+                            //System.out.println("----------------");
                             outputLine = ("0xB0" + ", " + "0x" + String.format("%02x", lowAddress) + ", " + "0x" + String.format("%02x", highAddress));
                             actualAddress += 3;
                             pass = true;
@@ -184,10 +212,10 @@ public class StringDecoder {
                         if (name.equals(input)) {
                             int lowAddress = labelAddress[i] & (0xff);
                             int highAddress = labelAddress[i] >> 8;
-                            System.out.println(name);
-                            System.out.println(input);
-                            System.out.printf("%02x%n", labelAddress[i]);
-                            System.out.println("----------------");
+                            //System.out.println(name);
+                            //System.out.println(input);
+                            //System.out.printf("%02x%n", labelAddress[i]);
+                            //System.out.println("----------------");
                             outputLine = ("0x30" + ", " + "0x" + String.format("%02x", lowAddress) + ", " + "0x" + String.format("%02x", highAddress));
                             actualAddress += 3;
                             pass = true;
@@ -208,10 +236,10 @@ public class StringDecoder {
                         if (name.equals(input)) {
                             int lowAddress = labelAddress[i] & (0xff);
                             int highAddress = labelAddress[i] >> 8;
-                            System.out.println(name);
-                            System.out.println(input);
-                            System.out.printf("%02x%n", labelAddress[i]);
-                            System.out.println("----------------");
+                            //System.out.println(name);
+                            //System.out.println(input);
+                            //System.out.printf("%02x%n", labelAddress[i]);
+                            //System.out.println("----------------");
                             outputLine = ("0xD0" + ", " + "0x" + String.format("%02x", lowAddress) + ", " + "0x" + String.format("%02x", highAddress));
                             actualAddress += 3;
                             pass = true;
@@ -232,10 +260,10 @@ public class StringDecoder {
                         if (name.equals(input)) {
                             int lowAddress = labelAddress[i] & (0xff);
                             int highAddress = labelAddress[i] >> 8;
-                            System.out.println(name);
-                            System.out.println(input);
-                            System.out.printf("%02x%n", labelAddress[i]);
-                            System.out.println("----------------");
+                            //System.out.println(name);
+                            //System.out.println(input);
+                            //System.out.printf("%02x%n", labelAddress[i]);
+                            //System.out.println("----------------");
                             outputLine = ("0x10" + ", " + "0x" + String.format("%02x", lowAddress) + ", " + "0x" + String.format("%02x", highAddress));
                             actualAddress += 3;
                             pass = true;
@@ -260,10 +288,10 @@ public class StringDecoder {
                         if (name.equals(input)) {
                             int lowAddress = labelAddress[i] & (0xff);
                             int highAddress = labelAddress[i] >> 8;
-                            System.out.println(name);
-                            System.out.println(input);
-                            System.out.printf("%02x%n", labelAddress[i]);
-                            System.out.println("----------------");
+                            //System.out.println(name);
+                            //System.out.println(input);
+                            //System.out.printf("%02x%n", labelAddress[i]);
+                            //System.out.println("----------------");
                             outputLine = ("0x50" + ", " + "0x" + String.format("%02x", lowAddress) + ", " + "0x" + String.format("%02x", highAddress));
                             actualAddress += 3;
                             pass = true;
@@ -308,6 +336,8 @@ public class StringDecoder {
                 case "EOR":
                     break;
                 case "INC":
+                    outputLine = "0x1A";
+                    actualAddress += 1;
                     break;
                 case "INX":
                         outputLine = "0xE8";
@@ -439,8 +469,10 @@ public class StringDecoder {
             }
             ;
         lineNumber++;
-        outputLine = outputLine + ",";
-        System.out.println(outputLine);
+        if(!start.equals("VAR")) {
+            outputLine = outputLine + ",";
+        }
+        //System.out.println(outputLine);
         return outputLine.strip(); // +  " | " + actualAddress;
     }
 
@@ -458,6 +490,23 @@ public class StringDecoder {
             actualAddress += 3;
             return Arrays.toString(output.toArray()).replace("[","").replace("]","").trim();
         } else {
+            for(int i = 0; i < variable.size(); i++){
+                String name = variable.get(i);
+                if(name.equals(line[1])){ //if variable name equal to name on line
+                    if(variableValue[i].startsWith("#")){
+                        output.add("0x" + hexToString(opcodeAbsolute));
+                        output.add("0x" + variableValueLow[i]);
+                        actualAddress += 2;
+                        return Arrays.toString(output.toArray()).replace("[","").replace("]","").trim();
+                    } else if(variableValue[i].startsWith("$")){
+                        output.add("0x" + hexToString(opcodeAddress));
+                        output.add("0x" + variableValueLow[i]);
+                        output.add("0x" + variableValueHigh[i]);
+                        actualAddress += 3;
+                        return Arrays.toString(output.toArray()).replace("[", "").replace("]", "").trim();
+                    }
+                }
+            }
             throw new IllegalStateException("Not a valid number: " + line[1] + " At line " + lineNumber);
         }
     }
@@ -470,6 +519,17 @@ public class StringDecoder {
             actualAddress += 3;
             return Arrays.toString(output.toArray()).replace("[","").replace("]","").trim();
         } else {
+            for(int i = 0; i < variable.size(); i++){
+                String name = variable.get(i);
+                if(name.equals(line[1])){ //if variable name equal to name on line
+                    ArrayList<String> output = new ArrayList<String>();
+                    output.add("0x" + hexToString(opcodeAbsolute));
+                    output.add("0x" + variableValueLow[i]);
+                    output.add("0x" + variableValueHigh[i]);
+                    actualAddress += 3;
+                    return Arrays.toString(output.toArray()).replace("[","").replace("]","").trim();
+                }
+            }
             throw new IllegalStateException("Not a valid number: " + line[1] + " At line " + lineNumber);
         }
     }

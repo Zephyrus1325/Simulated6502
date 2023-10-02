@@ -24,6 +24,7 @@ public class Computer_GUI {
     private void drawBackground(){
         screen.background(180);
         screen.stroke(0);
+        screen.strokeWeight(2);
         screen.fill(222,228,255);
         screen.rectMode(PConstants.CORNER);
         screen.rect(width/16,height/32,width/32,30*height/32); //Address Bus
@@ -124,43 +125,43 @@ public class Computer_GUI {
                 //; //Y
                 break;
             case 3:
-                partInfo = 3; //Stack
+               //Stack
                 break;
             case 4:
-                partInfo = 4; //PCH
+               //PCH
                 break;
             case 5:
-                partInfo = 5; //PCL
+                 //PCL
                 break;
             case 6:
-                partInfo = 6; //DLH
+                 //DLH
                 break;
             case 7:
-                partInfo = 7; //DLL
+                 //DLL
                 break;
             case 8:
-                partInfo = 8; //RAM
+                 //RAM
                 break;
             case 9:
-                partInfo = 9; //ROM
+                 //ROM
                 break;
             case 10:
-                partInfo = 10; //A
+                 //A
                 break;
             case 11:
-                partInfo = 11; //ALu
+                 //ALu
                 break;
             case 12:
-                partInfo = 12; //B
+                 //B
                 break;
             case 13:
-                partInfo = 13; //STATUS
+                 //STATUS
                 break;
             case 14:
-                partInfo = 14; //INSTRUCTION
+                 //INSTRUCTION
                 break;
             case 15:
-                partInfo = 15; //DECODER
+                //DECODER
                 break;
         }
     }
@@ -179,5 +180,11 @@ public class Computer_GUI {
         screen.fill(0);
         screen.textSize(width/50);
         screen.text("X REGISTER",12*width/16,height/5,4*width/16,height/16);
+        screen.strokeWeight(5);
+        screen.stroke(0);
+        screen.fill(0,255,0); //READING INPUT
+        screen.rect(25*width/32,12*height/27,1*width/52,height/27);
+        screen.fill(255,0,0); //OUTPUTTING
+        screen.rect(25*width/32,14*height/27,1*width/52,height/27);
     }
 }

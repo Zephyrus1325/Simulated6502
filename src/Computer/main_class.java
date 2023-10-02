@@ -17,7 +17,7 @@ import static java.lang.Thread.sleep;
 public class main_class {
 
     public static void main(String[] args) throws InterruptedException {
-
+        int counter = 0;
         //Initialize Classes
         Register A = new Register();
         Register B = new Register();
@@ -129,6 +129,16 @@ public class main_class {
             decoder.setInstruction(dataBus,clock);
 
             //System Variables check
+
+            if(X_Y.getLowValue()==0x04){
+                if(counter == 0) {
+                    System.out.println((RAM.getValue(0x0206) << 16) + (RAM.getValue(0x0207) << 8) + (RAM.getValue(0x0208)));
+                }
+                counter++;
+                if (counter >= 14){
+                    counter = 0;
+                }
+            }
             /*
             System.out.printf("%02x",A.getValue());
             System.out.print(" | ");
@@ -148,7 +158,10 @@ public class main_class {
             System.out.print(" | ");
 
              */
+            /*
             System.out.printf("%02x",A.getValue());
+            System.out.print(" | ");
+            System.out.printf("%02x",B.getValue());
             System.out.print(" | ");
             System.out.printf("%02x",X_Y.getLowValue());
             System.out.print(" | ");
@@ -161,21 +174,36 @@ public class main_class {
             System.out.printf("%02x",dataBus);
             System.out.print(" | ");
             System.out.printf("%04x",addressBus);
-            System.out.print(" | ");
+            System.out.print(" |A: ");
             System.out.printf("%02x", RAM.getValue(0x0200));
             System.out.print(" | ");
             System.out.printf("%02x", RAM.getValue(0x0201));
             System.out.print(" | ");
             System.out.printf("%02x", RAM.getValue(0x0202));
+            System.out.print(" |B: ");
+            System.out.printf("%02x", RAM.getValue(0x0203));
             System.out.print(" | ");
-            System.out.printf("%02x", decoder.counterValue);
+            System.out.printf("%02x", RAM.getValue(0x0204));
             System.out.print(" | ");
+            System.out.printf("%02x", RAM.getValue(0x0205));
+            System.out.print(" |C: ");
+            System.out.printf("%02x", RAM.getValue(0x0206));
+            System.out.print(" | ");
+            System.out.printf("%02x", RAM.getValue(0x0207));
+            System.out.print(" | ");
+            System.out.printf("%02x", RAM.getValue(0x0208));
+            //System.out.print(" | ");
+            //System.out.printf("%02x", decoder.counterValue);
+            System.out.print(" |I: ");
             System.out.printf("%02x",decoder.InstructionBuffer);
             System.out.print(" | ");
+            System.out.println(statusRegister.getValue()&(1<<0);
+             */
+            /*
             System.out.print(readWrite);
             System.out.print(" | ");
             System.out.println(clock);
-
+            */
             /*
             System.out.printf("%03d", Computer.RAM.getValue(0x0200));
             System.out.print(" | ");
