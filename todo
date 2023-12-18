@@ -3,3 +3,12 @@ Todo:
     - integer math
     - solve branch errors
     - understand how the hell multiplication is made
+    -
+    - Compiler:
+    Supports:
+    Numbers: Decimal, Hex, Binary
+    Variables as numbers
+    Decent Variable declaration
+    .org
+    .word
+    .byte

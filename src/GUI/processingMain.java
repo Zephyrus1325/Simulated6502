@@ -20,13 +20,19 @@ public class processingMain extends PApplet {
         surface.setResizable(true);
         background(0);
         surface.setTitle("6502 Simulator");
+
     }
     public void draw(){
-        //display.drawScreen();
-        computer_GUI.drawDiagram();
+        display.drawScreen();
+        //computer_GUI.drawDiagram();
     }
 
-    public static void main(String args[]){
+    @Override
+    public void keyPressed() {
+        display.addKey(key);
+    }
+
+    public static void main(String[] args){
         PApplet.main("GUI.processingMain");
     }
 

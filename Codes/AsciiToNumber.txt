@@ -1,0 +1,75 @@
+var digit0 $0201 ; ones
+var digit1 $0202 ; tenths
+var digit2 $0203 ; hundreds
+var output $0204 ; output number
+var i $0200
+
+
+lda #32
+sta digit2
+
+lda #35
+sta digit1
+
+lda #35
+sta digit0
+
+lda digit0
+sbc #30
+sta digit0
+
+lda digit1
+sbc #30
+sta digit1
+
+lda digit2
+sbc #30
+sta digit2
+
+lda #00
+sta i
+forLoop1:
+lda i
+cmp digit0
+beq sair1 ; se A=i, sair do loop
+lda output
+adc #01
+sta output
+lda i
+adc #01
+sta i
+jmp forLoop1
+sair1:
+
+lda #00
+sta i
+forLoop2:
+lda i
+cmp digit1
+beq sair2 ; se A=i, sair do loop
+lda output
+adc #0A
+sta output
+lda i
+adc #01
+sta i
+jmp forLoop2
+sair2:
+
+lda #00
+sta i
+forLoop3:
+lda i
+cmp digit2
+beq sair3 ; se A=i, sair do loop
+lda output
+adc #64
+sta output
+lda i
+adc #01
+sta i
+jmp forLoop3
+sair3:
+
+wait:
+jmp wait

@@ -1,0 +1,54 @@
+var display $1000
+var pointer $1001
+var input $1002
+var config $1003
+
+ldx #00
+loop:
+lda ($1100, x)
+sta display
+inx
+cpx #FF
+beq continue
+cmp #03
+beq wait
+jmp loop
+
+continue:
+lda ($1200, x)
+sta display
+inx
+cmp #03
+beq input
+cpx #FF
+beq input
+jmp continue
+
+input:
+ldx config
+cpx #00
+bne escreve
+jmp input
+
+
+escreve:
+lda input
+cmp #08
+beq diminui
+sta display
+jmp input
+
+diminui:
+lda pointer
+sbc #01
+sta pointer
+lda #20
+sta display
+lda pointer
+sbc #01
+sta pointer
+jmp input
+
+
+wait:
+jmp wait

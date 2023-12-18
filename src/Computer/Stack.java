@@ -12,7 +12,6 @@ public class Stack {
 
     public int update(int bus, boolean clock){
         int busValue = bus;
-
         if(enable && clock){
             if(this.down){
                 value--;
@@ -20,7 +19,6 @@ public class Stack {
                 value++;
             }
         }
-
         if(input && !clock){
             value = busValue;
         }
@@ -33,7 +31,10 @@ public class Stack {
 
     public int addressUpdate(int addressBus, boolean clock){
         int busValue = addressBus;
-        if(outputAddress && !clock){
+
+
+
+        if(outputAddress){ // && !clock
             valueOutput = (1<<8)|value;
             busValue = valueOutput;
         }
@@ -54,6 +55,9 @@ public class Stack {
     public void setCountEnable(boolean input){
         this.enable = input;
 
+    }
+    public int getValue(){
+        return this.value;
     }
 
     public void setDown(boolean input){

@@ -1,61 +1,60 @@
-;Fibbonacci Code With 3 Bytes (1 to 14.930.352) - 36 numbers
-ldx #00
+var display $1000
+var pointer $1001
+var input $1002
+var config $1003
+
+var i $02ff
+var health $0200
+
+lda #0f
+sta health
+
+lda #08
+sta config
+
+loop:
 lda #01
-var A $0200
-var B $0201
-var C $0202
-var D $0203
-var E $0204
-var F $0205
-var X $0206
-var Y $0207
-var Z $0208
-sta $0205 ; F = 1
-code:
-;---------------------------- C = A+B
-ldx #01
-lda C    ;
-adc F    ;
-sta Z    ; Z=C+F
-parta:
-lda B    ;
-adc E    ;
-sta Y    ; Y=B+E
-partB:
-lda A    ;
-adc D    ;
-sta X    ; X=A+D
-bcs stop  ; If carry, stop program
-ldx #02
-;--------------------------- A = B
-lda D ;
-sta A ; A = D
+sta config
 
-lda E ;
-sta B ; B = E
+lda #80
+sta pointer
 
-lda F ;
-sta C ; C = F
-ldx #03
-;--------------------------- B = C
-lda X ;
-sta D ; D = X
+lda #00 ; inicializa o i
+sta i
 
-lda Y ;
-sta E ; E = Y
+forLoop:
+lda '#'
+sta display
+lda i
+inc
+sta i
+cmp health
+bmi forLoop
+;codigo depois do for
+lda #18
+sta config
 
-lda Z ;
-sta F ; F = Z
-ldx #04
-;----------------------------
-jmp code
+lda config
+cmp #00
+bne escreve
+jmp loop
 
-stop:
-jmp stop
+escreve:
+lda input
+cmp 'a'
+beq sub
+cmp 'd'
+beq add
+jmp loop
 
-;lda $0202 ;
-;sta $0201 ; B = C
+add:
+lda health
+inc
+sta health
+jmp loop
 
-;lda $0200 ;
-;adc $0201 ;
-;sta $0202 ; C=A+B
+sub:
+lda health
+dec
+sta health
+jmp loop

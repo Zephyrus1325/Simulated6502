@@ -1,4 +1,5 @@
-package Computer;/*
+package Computer;
+/*
     Loading Order:
 
     Clock = 0
@@ -12,12 +13,16 @@ package Computer;/*
  */
 
 
+import GUI.Console;
+
+import java.io.IOException;
+
 import static java.lang.Thread.sleep;
 
-public class main_class {
+public class Computer {
 
     public static void main(String[] args) throws InterruptedException {
-        int counter = 0;
+
         //Initialize Classes
         Register A = new Register();
         Register B = new Register();
@@ -30,8 +35,8 @@ public class main_class {
         AddressedRegister X_Y = new AddressedRegister();
         AddressedRegister latch = new AddressedRegister();
         RAM RAM = new RAM(0x0000,0x0fff);
-        ROM ROM = new ROM(0x1100,0xffff);
         IO IO = new IO(0x1000);
+        ROM ROM = new ROM(0xf000,0xffff);
         boolean clock = false;
         int dataBus = 0;
         int addressBus = 0;
@@ -53,7 +58,6 @@ public class main_class {
         int A1  = (1<<12);
         int A2  = (1<<13);
         int A3  = (1<<14);
-        int AIN = (1<<30);
         int AOT = (1<<15);
         int PCL = (1<<16);
         int PCH = (1<<17);
@@ -107,67 +111,76 @@ public class main_class {
             latch.setOutputAddress((control&LO)==LO);
             readWrite = (control&RW)==RW;
             RAM.setRead(readWrite);
-            ROM.setRead(readWrite);
             IO.setRead(readWrite);
+            ROM.setRead(readWrite);
 //-------------------------------------------------------------------------------
             addressBus = programCounter.addressUpdate(addressBus);
             addressBus = stack.addressUpdate(addressBus,clock);
             addressBus = X_Y.addressUpdate(addressBus,clock);
             addressBus = latch.addressUpdate(addressBus,clock);
             dataBus = RAM.update(addressBus,dataBus,clock);
+            dataBus = IO.update(addressBus,dataBus,clock);
             dataBus = ROM.update(addressBus,dataBus);
-            dataBus = stack.update(dataBus,clock);
             dataBus = programCounter.update(dataBus,clock);
             statusRegister.setValue(decoder.setStatus(statusRegister.getValue()));
             ALU.setStatus(statusRegister.getValue());
-            dataBus = X_Y.update(dataBus,clock);
-            if((control&AIN)==AIN){
-                dataBus = ALU.update(dataBus, B.getValue(), dataBus, clock);
-            } else {
-                dataBus = ALU.update(dataBus, A.getValue(), B.getValue(), clock);
-            }
-            dataBus = IO.update(addressBus,dataBus,clock);
+            dataBus = ALU.update(dataBus, A.getValue(), B.getValue(), clock);
             dataBus = A.update(dataBus,clock);
             dataBus = B.update(dataBus,clock);
             dataBus = X_Y.update(dataBus,clock);
             dataBus = latch.update(dataBus,clock);
             dataBus = statusRegister.update(dataBus,clock);
-            dataBus = RAM.update(addressBus,dataBus,clock);
             statusRegister.setValue(ALU.updateStatus(statusRegister.getValue()));
-
-            //-------------------------------------------
+            dataBus = stack.update(dataBus,clock);
             decoder.setInstruction(dataBus,clock);
 
             //System Variables check
-            /*
-            System.out.print("A:");
-            System.out.printf("%02x", A.getValue());
-            System.out.printf(" i %02x", RAM.getValue(0x0200));
-            System.out.print(" PC:");
+            System.out.printf("%02x",A.getValue());
+            System.out.print(" | ");
+            if((control&AI) == AI){
+                System.out.print("AI");
+            } else if((control&AO) == AO){
+                System.out.print("AO");
+            } else {
+                System.out.print("--");
+            }
+            System.out.print(" | ");
+            System.out.printf("%02x",B.getValue());
+            System.out.print(" | ");
+            System.out.print(((control&BI) == BI) ? "BI" : "--");
+            System.out.print(" | ");
+            System.out.print(((control&AOT) == AOT) ? "AOT" : "---");
+            System.out.print(" | ");
             System.out.printf("%04x",programCounter.getCounter());
-            System.out.print(" DB:");
+            System.out.print(" | ");
+            //System.out.printf("%02x",statusRegister.getValue());
+            //System.out.print(" | ");
             System.out.printf("%02x",dataBus);
-            System.out.print(" AB:");
+            System.out.print(" | ");
             System.out.printf("%04x",addressBus);
-            System.out.print(" LAH:");
-            System.out.printf("%02x", latch.getHighValue());
-            System.out.print(" LAL:");
-            System.out.printf("%02x", latch.getLowValue());
-            System.out.print(" DC:");
+            System.out.print(" | ");
+            System.out.printf("%02x", RAM.getValue(0x0000));
+            System.out.print(" | ");
             System.out.printf("%02x", decoder.counterValue);
-            System.out.print(" IR:");
+            System.out.print(" | ");
             System.out.printf("%02x",decoder.InstructionBuffer);
-            System.out.print(" ");
-            System.out.print(readWrite ? "R " : "W ");
-            System.out.print(String.format("%8s", Integer.toBinaryString(statusRegister.getValue())).replace(' ', '0'));
-            System.out.print(" CLK: ");
+            System.out.print(" | ");
+            System.out.print(readWrite);
+            System.out.print(" | ");
             System.out.println(clock);
+            /*
+            System.out.printf("%03d", RAM.getValue(0x0200));
+            System.out.print(" | ");
+            System.out.printf("%03d", RAM.getValue(0x0201));
+            System.out.print(" | ");
+            System.out.printf("%03d\n", RAM.getValue(0x0202));
             */
-            //long endTime = System.nanoTime();
-            sleep(0,0);
+            long totalTime = 200;
+            long endTime = System.nanoTime();
+
             //sleep(0, (int) Math.max(0,(totalTime - (endTime - startTime))));
             //endTime = System.nanoTime();
-            //System.out.println((endTime - startTime)/1000);
+            //System.out.println(endTime - startTime);
             clock = !clock;
 
         }

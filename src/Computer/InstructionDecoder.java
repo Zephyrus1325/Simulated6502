@@ -126,6 +126,7 @@ public class InstructionDecoder {
     static int A1  = (1<<12);
     static int A2  = (1<<13);
     static int A3  = (1<<14);
+    static int AIN = (1<<31); //Make a operation with B register and the Data bus
     static int AOT = (1<<15);
     static int PCL = (1<<16);
     static int PCH = (1<<17);
@@ -149,15 +150,15 @@ PCE|PCO|II|RW   ,0                ,0                ,0                ,0        
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //02 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //03 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //04 - TSB zp
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //05 - ORA zp
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH              ,BI|LO|RW         ,AI|AOT|A1|A2     ,RS  ,0   ,0    , //05 - ORA zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //06 - ASL zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //07 - RMB0 zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //08 - PHP s
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //09 - ORA #
+PCE|PCO|II|RW   ,PCE|PCO|BI|RW    ,AI|AOT|A1|A2     ,RS               ,0                ,0   ,0   ,0    , //09 - ORA #
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //0a - ASL A
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //0b -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //0c - TSB a
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //0d - ORA a
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCO|PCE|RW   ,BI|LO|RW         ,AI|AOT|A1|A2     ,RS  ,0   ,0    , //0d - ORA a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //0e - ASL a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //0f - BBR0 r
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //10 - BPL r
@@ -176,23 +177,23 @@ PCE|PCO|II|RW   ,0                ,0                ,0                ,0        
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //1d - ORA a,x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //1e - ASL a,x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //1f - BBR1 r
-PCE|PCO|II|RW   ,LIL|PCE|PCO      ,LIH|PCE|PCO      ,PCO|PCL|SE|SA|RW ,PCO|PCH|SE|SA|RW ,LOL|PCL,LOH|PCH,RS, //20 - JSR
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,PCO|PCL|SE|SA    ,PCO|PCH|SE|SA    ,LOL|PCL,LOH|PCH,RS, //20 - JSR
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //21 - AND (zp, x)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //22 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //23 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //24 - BIT zp
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //25 - AND zp
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH              ,BI|LO|RW         ,AI|AOT|A0|A2     ,RS  ,0   ,0    , //25 - AND zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //26 - ROL zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //27 - RMB2 zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //28 - PLP s
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //29 - AND #
+PCE|PCO|II|RW   ,PCE|PCO|BI|RW    ,AI|AOT|A0|A2     ,RS               ,0                ,0   ,0   ,0    , //29 - AND #
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //2a - ROL A
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //2b -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //2c - BIT a
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //2d - AND a
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCO|PCE|RW   ,BI|LO|RW         ,AI|AOT|A0|A2     ,RS  ,0   ,0    , //2d - AND a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //2e - ROL a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //2f - BBR2 r
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //30 - BMI r
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LOL|PCL          ,LOH|PCH          ,RS  ,0   ,0    , //30 - BMI r
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //31 - AND (zp), y
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //32 - AND (zp)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //33 -
@@ -217,19 +218,19 @@ PCE|PCO|II|RW   ,0                ,0                ,0                ,0        
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //46 - LSR zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //47 - RMB4 zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //48 - PHA s
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //49 - EOR #
+PCE|PCO|II|RW   ,PCE|PCO|BI|RW    ,AI|AOT|A0|A1|A2  ,RS               ,0                ,0   ,0   ,0    ,  //49 - EOR #
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //4a - LSR A
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //4b -
-PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LOL|PCL          ,LOH|PCH          ,RS  ,0   ,0    , //4c - JMP a
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //4d - EOR a
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LOL|PCL          ,LOH|PCH          ,RS  ,0   ,0    , //4c - JMP
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCO|PCE|RW   ,BI|LO|RW         ,AI|AOT|A0|A1|A2  ,RS  ,0   ,0    , //4d - EOR a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //4e - LSR a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //4f - BBR4 r
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //50 - BVC r (a)
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LOL|PCL          ,LOH|PCH          ,RS  ,0   ,0    , //50 - BVC r (a)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //51 - ERO (zp), y
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //52 - EOR (zp)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //53 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //54 -
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //55 - EOR zp, x
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH              ,BI|LO|RW         ,AI|AOT|A0|A1|A2  ,RS  ,0   ,0    , //55 - EOR zp, x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //56 - LSR zp, x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //57 - RMB5 zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //58 - CLI i
@@ -240,12 +241,12 @@ PCE|PCO|II|RW   ,0                ,0                ,0                ,0        
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //5d - EOR a, x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //5e - LSR a, x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //5f - BBR5 r
-PCE|PCO|II|RW   ,SE|SU            ,SA|SE|SU|PCH     ,SA|PCL           ,RS               ,0   ,0   ,0    , //60 - RTS s
+PCE|PCO|II|RW   ,SE|SU|SA|RW      ,SA|SE|SU|PCH|RW  ,SA|PCL|RW        ,RS               ,0   ,0   ,0    , //60 - RTS s
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //61 - ADC (zp ,x)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //62 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //63 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //64 - STZ zp
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //65 - ADC zp
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH              ,BI|LO|RW         ,AI|AOT|A0        ,RS  ,0   ,0    , //65 - ADC zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //66 - ROR zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //67 - RMB6 zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //68 - PLA s
@@ -256,7 +257,7 @@ PCE|PCO|II|RW   ,0                ,0                ,0                ,0        
 PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCO|PCE|RW   ,BI|LO|RW         ,AI|AOT|A0        ,RS  ,0   ,0    , //6d - ADC a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //6e - ROR a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //6f - BBR6 r
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //70 - BVS r
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LOL|PCL          ,LOH|PCH          ,RS  ,0   ,0    , //70 - BVS r
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //71 - ADC (zp), y
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //72 - ADC (zp)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //73 -
@@ -276,8 +277,8 @@ PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LOL|PCL          ,LOH|PCH  
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //81 - STA (zp, x)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //82 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //83 -
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //84 - STY zp, x
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //85 - STA zp, x
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH              ,YO|LO            ,RS               ,0   ,0   ,0    , //84 - STY zp
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH              ,AO|LO            ,RS               ,0   ,0   ,0    , //85 - STA zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //86 - STX zp, y
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //87 - SMB1 zp
 PCE|PCO|II|RW   ,BI|AO            ,AI|AOT|A2|A3     ,RS               ,0                ,0   ,0   ,0    , //88 - TYA i
@@ -301,7 +302,7 @@ PCE|PCO|II|RW   ,0                ,0                ,0                ,0        
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //9a - TXS i
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //9b -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //9c - STZ a
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //9d - STA a, x
+PCE|PCO|II|RW   ,BI|XO            ,PCE|PCO|AIN|A0   ,LIL|AOT|RW       ,LIH|PCE|PCO|RW   ,AO|LO,RS ,0    , //9d - STA a, x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //9e - STZ a, x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //9f - BBS1 r
 PCE|PCO|II|RW   ,PCE|PCO|YI|RW    ,RS               ,0                ,0                ,0   ,0   ,0    , //a0 - LDY #
@@ -309,8 +310,8 @@ PCE|PCO|II|RW   ,0                ,0                ,0                ,0        
 PCE|PCO|II|RW   ,PCE|PCO|XI|RW    ,RS               ,0                ,0                ,0   ,0   ,0    , //a2 - LDX #
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //a3 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //a4 - LDY zp
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //a5 - LDA zp
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //a6 - LDX zp
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH              ,AI|LO|RW         ,RS               ,0   ,0   ,0    , //a5 - LDA zp
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH              ,XI|LO|RW         ,RS               ,0   ,0   ,0    , //a6 - LDX zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //a7 - SMB2 zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //a8 - TAY i
 PCE|PCO|II|RW   ,PCE|PCO|AI|RW    ,RS               ,0                ,0                ,0   ,0   ,0    , //a9 - LDA #
@@ -333,24 +334,24 @@ PCE|PCO|II|RW   ,PCE|PCO|BI|RW    ,AI|YO            ,LIL|AOT|A0       ,LIH|PCE|P
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //ba - TSX i
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //bb -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //bc - LDY a, x
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //bd - LDA a, x
+PCE|PCO|II|RW   ,PCE|PCO|BI|RW    ,AI|XO            ,LIL|AOT|A0       ,LIH|PCE|PCO|RW ,AI|LO|RW  ,RS,0  , //bd - LDA a, x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //be - LDX a, y
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //bf - BBS3 r
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //c0 - CPY #
+PCE|PCO|II|RW   ,BI|YO            ,PCE|PCO|AIN|A3|RW,RS               ,0                ,0   ,0   ,0    , //c0 - CPY #
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //c1 - CMP (zp, x)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //c2 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //c3 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //c4 - CPY zp
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //c5 - CMP zp
+PCE|PCO|II|RW   ,BI|AO            ,LIL|PCE|PCO|RW   ,LIH              ,LO|AIN|A3|RW     ,RS  ,0   ,0    , //c5 - CMP zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //c6 - DEC zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //c7 - SMB4 zp
 PCE|PCO|II|RW   ,BI|YO            ,YI|AOT|A0|A1|A3  ,RS               ,0                ,0   ,0   ,0    , //c8 - INY i
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //c9 - CMP #
+PCE|PCO|II|RW   ,BI|AO            ,PCE|PCO|AIN|A3|RW,RS               ,0                ,0   ,0   ,0    , //c9 - CMP #
 PCE|PCO|II|RW   ,BI|XO            ,XI|AOT|A2|A3     ,RS               ,0                ,0   ,0   ,0    , //ca - DEX i
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //cb - WAI i
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //cc - CPY a
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //cd - CPY a
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //ce - CMP a
+PCE|PCO|II|RW   ,BI|YO            ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LO|AIN|A3|RW     ,RS  ,0   ,0    , //cc - CPY a
+PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //cd - CPY a???
+PCE|PCO|II|RW   ,BI|AO            ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LO|AIN|A3|RW     ,RS  ,0   ,0    , //ce - CMP a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //cf - DEC a
 PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LOL|PCL          ,LOH|PCH          ,RS  ,0   ,0    , //d0 - BNE r (a)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //d1 - CMP (zp), y
@@ -368,21 +369,21 @@ PCE|PCO|II|RW   ,0                ,0                ,0                ,0        
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //dd - CMP a, x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //de - DEC a, x
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //df - BBS5 r
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //e0 - CPX #
+PCE|PCO|II|RW   ,BI|XO            ,PCE|PCO|AIN|A3|RW,RS               ,0                ,0   ,0   ,0    , //e0 - CPX #
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //e1 - SBC (zp, x)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //e2 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //e3 -
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //e4 - CPX zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //e5 - SBC zp
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //e6 - INC zp
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH              ,LO|BI|RW         ,LO|AOT|A0|A1|A3  ,0   ,0   ,0    , //e6 - INC zp
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //e7 - SMB6 zp
 PCE|PCO|II|RW   ,BI|XO            ,XI|AOT|A0|A1|A3  ,RS               ,0                ,0   ,0   ,0    , //e8 - INX i
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //e9 - SBC #
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //ea - NOP i
+PCE|PCO|II|RW   ,PCE|PCO|BI|RW    ,AI|AOT|A1        ,RS               ,0                ,0   ,0   ,0    , //e9 - SBC #
+PCE|PCO|II|RW   ,RS               ,0                ,0                ,0                ,0   ,0   ,0    , //ea - NOP i
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //eb -
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //ec - CPX a
+PCE|PCO|II|RW   ,BI|XO            ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LO|AIN|A3|RW     ,RS  ,0   ,0    , //ec - CPX a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //ed - SBC a
-PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //ee - INC a
+PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LO|BI|RW         ,LO|AOT|A0|A1|A3  ,0   ,0   ,0    , //ee - INC a
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //ef - BBS6 r
 PCE|PCO|II|RW   ,LIL|PCE|PCO|RW   ,LIH|PCE|PCO|RW   ,LOL|PCL          ,LOH|PCH          ,RS  ,0   ,0    , //f0 - BEQ r (a)
 PCE|PCO|II|RW   ,0                ,0                ,0                ,0                ,0   ,0   ,0    , //f1 - SBC (zp), y

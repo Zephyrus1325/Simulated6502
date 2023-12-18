@@ -1,0 +1,27 @@
+lda 'H'
+sta $1000
+lda 'e'
+sta $1000
+lda 'l'
+sta $1000
+lda 'l'
+sta $1000
+lda 'o'
+sta $1000
+lda #20
+sta $1000
+lda 'W'
+sta $1000
+lda 'o'
+sta $1000
+lda 'r'
+sta $1000
+lda 'l'
+sta $1000
+lda 'd'
+sta $1000
+lda '!'
+sta $1000
+
+wait:
+jmp wait

@@ -1,0 +1,49 @@
+--1 byte commands--
+Sum:
+lda A
+adc B
+sta C    ; C=A+B
+
+Sub:
+lda A
+sbc B
+sta C    ; C=A-B
+
+Transference:
+lda B ;
+sta A ; A = B
+
+For loop: (i = A; i > 0; i--)
+lda A
+sta i
+forloop1:
+;codigo a ser rodado
+beq sair1;
+lda i
+sbc #01
+jmp forloop1
+sair1:
+
+For loop; (i = 0; i < valorMaximo; i++)
+lda #00 ; inicializa o i
+sta i
+forLoop:
+;Codigo intended
+lda i
+inc
+sta i
+cmp valorMaximo
+bmi forLoop
+;codigo depois do for
+
+
+----------Text control------------
+;read all chracters until ETX flag (#03)
+ldx #00
+loop:
+lda ($1100, x)
+sta display
+inx
+cmp #03
+beq wait
+jmp loop

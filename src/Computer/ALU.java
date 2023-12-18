@@ -10,7 +10,7 @@ public class ALU {
     final int D = (1<<3);//<- chato pra caramba pra implementar, mas binary coded decimal.
     final int V = (1<<6);
     final int N = (1<<7);
-    private int status = 0x30;
+    private int status = 0x30; //0b00110000
 
     private boolean A0 = false;
     private boolean A1 = false;
@@ -55,22 +55,22 @@ public class ALU {
 
         if(A > 255){
             A -= 256;
-            status = (status | (1<<C));
+            status = (status | C);
         } else {
-            status = (status & ~(1<<C));
+            status = (status & ~C);
         }
 
         if(A < 0){
             A += 256;
-            status = (status | (1<<N));
+            status = (status | N);
         } else {
-            status = (status & ~(1<<N));
+            status = (status & ~N);
         }
 
         if(A == 0){
-            status = (status | (1<<Z));
+            status = (status | Z);
         } else {
-            status = (status & ~(1<<Z));
+            status = (status & ~Z);
         }
         //N = 1 if signed(A-B)<0; V=1 if Signed(A-B) > 127 or < -128; Z=1 if A-B = 0 ; C = 1 if A-B < 0
     }
@@ -80,22 +80,22 @@ public class ALU {
 
         if(A > 255){
             A -= 256;
-            status = (status | (1<<C));
+            status = (status | C);
         } else {
-            status = (status & ~(1<<C));
+            status = (status & ~C);
         }
 
         if(A < 0){
             A += 256;
-            status = (status | (1<<N));
+            status = (status | N);
         } else {
-            status = (status & ~(1<<N));
+            status = (status & ~N);
         }
 
         if(A == 0){
-            status = (status | (1<<Z));
+            status = (status | Z);
         } else {
-            status = (status & ~(1<<Z));
+            status = (status & ~Z);
         }
 
         //N = 1 if A<<1 < 0; Z=1 if A<<1 = 0; C=1 if A<<1 < 255
@@ -104,19 +104,19 @@ public class ALU {
     public void right_shift(){ //0100
         A = (A>>1);
 
-        status = (status & ~(1<<N));
+        status = (status & ~N);
 
         if(A > 255){
             A -= 256;
-            status = (status | (1<<C));
+            status = (status | C);
         } else {
-            status = (status & ~(1<<C));
+            status = (status & ~C);
         }
 
         if(A == 0){
-            status = (status | (1<<Z));
+            status = (status | Z);
         } else {
-            status = (status & ~(1<<Z));
+            status = (status & ~Z);
         }
         //N = 0 everytime; Z if A>>1 = 0
     }
@@ -126,15 +126,15 @@ public class ALU {
 
         if(A < 0){
             A += 256;
-            status = (status | (1<<N));
+            status = (status | N);
         } else {
-            status = (status & ~(1<<N));
+            status = (status & ~N);
         }
 
         if(A == 0){
-            status = (status | (1<<Z));
+            status = (status | Z);
         } else {
-            status = (status & ~(1<<Z));
+            status = (status & ~Z);
         }
         //N=1 if A&B < 0; Z=1 if A&B = 0
     }
@@ -143,15 +143,15 @@ public class ALU {
         A = (A|B);
         if(A < 0){
             A += 256;
-            status = (status | (1<<N));
+            status = (status | N);
         } else {
-            status = (status & ~(1<<N));
+            status = (status & ~N);
         }
 
         if(A == 0){
-            status = (status | (1<<Z));
+            status = (status | Z);
         } else {
-            status = (status & ~(1<<Z));
+            status = (status & ~Z);
         }
         //N=1 if A|B < 0; Z=1 if A|B = 0
     }
@@ -160,49 +160,72 @@ public class ALU {
         A = (A^B);
         if(A < 0){
             A += 256;
-            status = (status | (1<<N));
+            status = (status | N);
         } else {
-            status = (status & ~(1<<N));
+            status = (status & ~N);
         }
 
         if(A == 0){
-            status = (status | (1<<Z));
+            status = (status | Z);
         } else {
-            status = (status & ~(1<<Z));
+            status = (status & ~Z);
         }
         //N=1 if A^B < 0; Z=1 if A^B = 0
     }
 
     public void compare(){ //1000
         if(A > B){
-            A -= 256;
-            status = (status | (1<<C));
+            status = (status | C);
         } else {
-            status = (status & ~(1<<C));
+            status = (status & ~C);
         }
 
         if(A < B){
-            A += 256;
-            status = (status | (1<<N));
+            status = (status | N);
         } else {
-            status = (status & ~(1<<N));
+            status = (status & ~N);
         }
 
         if(A == B){
-            status = (status | (1<<Z));
+            status = (status | Z);
         } else {
-            status = (status & ~(1<<Z));
+            status = (status & ~Z);
         }
         //Write N = 1 if A<B; Write Z = 1 if A=B; Write Carry 1 if A>B;
     }
 
     public void left_rotate(){ //1001
         A = (int) ((A << 1) | (A >> 7));
+
+        if(A > 255){
+            A -= 256;
+            status = (status | C);
+        } else {
+            status = (status & ~C);
+        }
+
+        if(A == 0){
+            status = (status | Z);
+        } else {
+            status = (status & ~Z);
+        }
         //N = 1 if A<<1 < 0; Z=1 if A<<1 = 0; C=1 if A<<1 < 255
     }
 
     public void right_rotate(){ //1010
        A = (int) ((A >> 1) | (A << 7));
+        if(A > 255){
+            A -= 256;
+            status = (status | C);
+        } else {
+            status = (status & ~C);
+        }
+
+        if(A == 0){
+            status = (status | Z);
+        } else {
+            status = (status & ~Z);
+        }
         //N = 1 if A>>1 < 0; Z=1 if A>>1 = 0; C=1 if A>>1 < 255
     }
 
@@ -288,15 +311,30 @@ public class ALU {
         }
 
         if(!A3 && A2 && !A1 && !A0) {//0100
-            left_shift();
+            right_shift();
+        }
+        if(!A3 && A2 && !A1 && A0) {//0101
+            AND();
+        }
+        if(!A3 && A2 && A1 && !A0) {//0110
+            OR();
+        }
+        if(!A3 && A2 && A1 && A0) {//0111
+            XOR();
         }
         if(A3 && !A2 && !A1 && !A0){//1000
             compare();
         }
-        if(A0 && A1 && !A2 && A3){
+        if(A3 && !A2 && !A1 && A0) {//1001
+            left_rotate();
+        }
+        if(A3 && !A2 && A1 && !A0) {//1010
+            right_rotate();
+        }
+        if(A0 && A1 && !A2 && A3){ //1011
             quickSum();
         }
-        if(!A0 && !A1 && A2 && A3){
+        if(!A0 && !A1 && A2 && A3){ //1100
             quickSub();
         }
     }
